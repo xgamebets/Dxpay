@@ -15,7 +15,7 @@ class GerenciamentoResource extends Resource
     protected static ?string $model = Gereciamento::class;
 
 
-    protected static ?string $modelLabel = "Ip's";
+    protected static ?string $modelLabel = "Gerenciamento de IP's";
 
     protected static ?string $navigationLabel = "Gerenciamento";
     protected static ?string $title = "Lista de Ip's";

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Widgets;
-class faWitget extends \Filament\Widgets\Widget
+class FaWitget extends \Filament\Widgets\Widget
 {
 
     /**

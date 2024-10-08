@@ -68,7 +68,7 @@ class Dashboard extends \Filament\Pages\Dashboard
             \App\Filament\Widgets\LineChart::class,
             \App\Filament\Widgets\OrdersChart::class,
             \App\Filament\Widgets\DonutChart::class,
-            \App\Filament\Widgets\FaWitget::class
+          //  \App\Filament\Widgets\FaWitget::class
             
 
         ];
