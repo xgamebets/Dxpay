@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\PixInModel;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class LineChart extends ApexChartWidget
@@ -32,6 +33,24 @@ class LineChart extends ApexChartWidget
      */
     protected function getOptions(): array
     {
+        // Obter o ano e o mês atual
+        $anoAtual = date('Y');
+        
+        // Inicializar um array para armazenar os dados mensais
+        $depositsPorMes = array_fill(0, 12, 0); // 12 meses
+    
+        // Agrupar depósitos por mês
+        $depositsGerados = PixInModel::where("user_id", auth()->user()->id)
+            // ->where("status", 0)
+            ->selectRaw('MONTH(created_at) as mes, COUNT(*) as total')
+            ->groupBy('mes')
+            ->get();
+    
+        // Preencher o array com os totais mensais
+        foreach ($depositsGerados as $deposito) {
+            $depositsPorMes[$deposito->mes - 1] = $deposito->total; // Meses são 1-12
+        }
+    
         return [
             'chart' => [
                 'type' => 'line',
@@ -42,8 +61,8 @@ class LineChart extends ApexChartWidget
             ],
             'series' => [
                 [
-                    'name' => 'Customers',
-                    'data' => [4344, 5676, 6798, 7890, 8987, 9388, 10343, 10524, 13664, 14345, 15753, 16398],
+                    'name' => 'Depósitos Gerados',
+                    'data' => $depositsPorMes, // Usar os dados agrupados
                 ],
             ],
             'xaxis' => [
@@ -76,7 +95,6 @@ class LineChart extends ApexChartWidget
                     'stops' => [0, 100, 100, 100],
                 ],
             ],
-
             'dataLabels' => [
                 'enabled' => false,
             ],

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Admin\Pages\PixInPage;
+use App\Models\PixInModel;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
@@ -73,7 +75,24 @@ class OrdersChart extends ApexChartWidget
     protected function getOptions(): array
     {
         $filters = $this->filterFormData;
-
+    
+         // Inicializar um array para armazenar os dados mensais
+                // Inicializar um array para armazenar os dados mensais
+         
+        // Inicializar um array para armazenar os dados mensais
+        $depositsPorMes = array_fill(0, 12, 0); // 12 meses
+    
+        // Agrupar depósitos por mês
+        $depositsGerados = PixInModel::where("user_id", auth()->user()->id)
+            // ->where("status", 0)
+            ->selectRaw('MONTH(created_at) as mes, COUNT(*) as total')
+            ->groupBy('mes')
+            ->get();
+    
+        // Preencher o array com os totais mensais
+        foreach ($depositsGerados as $deposito) {
+            $depositsPorMes[$deposito->mes - 1] = $deposito->total; // Meses são 1-12
+        }
         return [
             'chart' => [
                 'type' => $filters['ordersChartType'],
@@ -85,7 +104,7 @@ class OrdersChart extends ApexChartWidget
             'series' => [
                 [
                     'name' => 'Orders per month',
-                    'data' => [2433, 3454, 4566, 2342, 5545, 5765, 6787, 8767, 7565, 8576, 9686, 8996],
+                    'data' =>      $depositsPorMes, // Use the aggregated data
                 ],
             ],
             'plotOptions' => [
@@ -123,7 +142,6 @@ class OrdersChart extends ApexChartWidget
                     'stops' => [0, 100],
                 ],
             ],
-
             'dataLabels' => [
                 'enabled' => false,
             ],
