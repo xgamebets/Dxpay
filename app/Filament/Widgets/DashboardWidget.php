@@ -27,12 +27,13 @@ class DashboardWidget extends StatsOverviewWidget
             ,
             Stat::make('Vendas', "$1200")
             ->description('24% mais vendas')
-            ,
+            ->icon(Asset('assets/chart.svg')),
+            
             Stat::make('Conversão', "600")
                 ->icon(Asset('assets/arrows.svg'))
             ,
             Stat::make('Saldo', "R$ 5000")
-            ->icon(Asset('assets/unitstates.svg'))
+            ->icon(Asset('assets/money.svg'))
             ,
         ];
     }

@@ -59,10 +59,6 @@ class PixoutPage extends Page implements HasForms
                             ->label('Valor do pagamento')
                             ->placeholder('Digite aqui o valor')
                             ->maxLength(191),
-                        TextInput::make('pix_type')
-                            ->label('Valor do pagamento')
-                            ->placeholder('Digite aqui o tipo de chave')
-                            ->maxLength(191),
                         TextInput::make('pix_key')
                             ->label('Digite aqui a chave pix')
                             ->placeholder('Digite aqui a chave')
@@ -78,25 +74,7 @@ class PixoutPage extends Page implements HasForms
      */
     public function submit(): void
     {
-        $amount = $this->data['amount'];
-        // var_dump(route('pixgenerate'));die;
-        try {
-            $response = self::requestQrCode($amount);
-            if ($response['pixCopiaECola']) {
-
-                $qrCode = new QrCode($response['pixCopiaECola']);
-                $writer = new PngWriter();
-                $result = $writer->write($qrCode);
-
-
-                $this->qrCode = 'data:image/png;base64,' . base64_encode($result->getString());
-                $this->amount = $amount;
-            } else {
-                Notification::make()->title('Erro')->body('Erro ao gerar cobrança: ' . $response->body())->send();
-            }
-        } catch (\Exception $e) {
-            Notification::make()->title('Erro')->body('Erro ao gerar cobrança: ' . $e->getMessage())->send();
-        }
+        Notification::make()->title('Pare')->body('Função indisponivel para versão teste do app')->send();
     }
     public function copyQrCode(): void
     {
