@@ -21,6 +21,7 @@ class PixoutPage extends Page implements HasForms
     use InteractsWithForms;
     use VolutiTrait;
 
+
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
     protected static ?string $title = 'Realizar Pagamento';
@@ -74,15 +75,11 @@ class PixoutPage extends Page implements HasForms
      */
     public function submit(): void
     {
-        Notification::make()->title('Pare')->body('Função indisponivel para versão teste do app')->send();
+        $amount = $this->data['amount'];
+        $pixKey = $this->data['pix_key'];
+        $response = self::cashout($amount,$pixKey);
+        
+        Notification::make()->title('Status atual:'. $response['status'])->body('Saque realizado com sucesso!')->send();
     }
-    public function copyQrCode(): void
-    {
-        if ($this->qrCode) {
-            // Aqui você pode retornar a imagem do QR Code ou um alerta de sucesso
-            Notification::make()->title('Sucesso')->body('QR Code copiado para a área de transferência!')->send();
-        } else {
-            Notification::make()->title('Erro')->body('Não há QR Code para copiar.')->send();
-        }
-    }
+   
 }

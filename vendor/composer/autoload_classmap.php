@@ -26,6 +26,7 @@ return array(
     'App\\Http\\Controllers\\PixController' => $baseDir . '/app/Http/Controllers/PixController.php',
     'App\\Models\\Gereciamento' => $baseDir . '/app/Models/Gereciamento.php',
     'App\\Models\\PixInModel' => $baseDir . '/app/Models/PixInModel.php',
+    'App\\Models\\PixOut' => $baseDir . '/app/Models/PixOut.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\Filament\\AdminPanelProvider' => $baseDir . '/app/Providers/Filament/AdminPanelProvider.php',

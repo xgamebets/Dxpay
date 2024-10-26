@@ -2,12 +2,21 @@
 
 namespace App\Traits;
 
+use App\Models\PixInModel;
+use App\Models\PixOut;
 use Illuminate\Support\Facades\Http;
+use PhpParser\Node\Stmt\Return_;
+use Ramsey\Uuid\Uuid;
 
 trait VolutiTrait
 {
     public  static function authorization()
     {
+
+        if (!auth()->check()) {
+            return response()->json(['error' => 'Não logado']);
+        }
+
         $data = array(
             "grant_type" => "client_credentials",
             "client_id" => env("CLIENT_ID"),
@@ -25,7 +34,7 @@ trait VolutiTrait
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('accept: application/json','Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('accept: application/json', 'Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         $response = curl_exec($ch);
         curl_close($ch);
@@ -42,6 +51,10 @@ trait VolutiTrait
 
     public  static function authorizationCashout()
     {
+
+        if (!auth()->check()) {
+            return response()->json(['error' => 'Não logado']);
+        }
         $data = array(
             "grantType" => "client_credentials",
             "clientId" => env("CLIENT_IDW"),
@@ -60,7 +73,7 @@ trait VolutiTrait
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('accept: application/json','Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('accept: application/json', 'Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         $response = curl_exec($ch);
         curl_close($ch);
@@ -75,14 +88,14 @@ trait VolutiTrait
 
     public function requestQrCode($amount)
     {
-        $token = self::authorizationCashout();
+        $token = self::authorization();
 
         $data = array(
             "calendario" => array(
-                "expiracao"=> 86400
+                "expiracao" => 86400
             ),
             "valor" => array(
-                "original"=>$amount
+                "original" => $amount
             ),
 
             "chave" => env("KEY")
@@ -98,7 +111,7 @@ trait VolutiTrait
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('authorization: Bearer '. $token,'Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('authorization: Bearer ' . $token, 'Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         $response = curl_exec($ch);
         curl_close($ch);
@@ -108,13 +121,30 @@ trait VolutiTrait
 
         // Decodifica o corpo da resposta JSON
         $responseData = json_decode($body, true);
+        if (isset($responseData['pixCopiaECola'])) {
+            $data = array(
+                'amount' => $amount,
+                'txtId' => $responseData['txid'],
+                'user_id' => auth()->user()->id,
+            );
+            PixInModel::insert($data);
+        }
         return $responseData;
     }
 
-    public function cashout($amount,$pixKey) {
+    public function cashout($amount, $pixKey)
+    {
         $token = self::authorizationCashout();
+        $uuid = Uuid::uuid4();
 
-        $withdrawalId = 'dawdaw-22344-111';
+        $withsrawalId =$uuid->toString();
+        $data  = array(
+            'id' =>     $withsrawalId ,
+            "userId" => auth()->user()->id,
+            "amount" => $amount
+
+        );
+        PixOut::insert($data);
 
         $data = array(
             "expiration" => 600,
@@ -122,10 +152,9 @@ trait VolutiTrait
                 "currency" => "BRL",
                 "amount" => $amount
             ),
-            "pixKey"=>$pixKey
+            "pixKey" => $pixKey
         );
 
-        
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://accounts.voluti.com.br/api/v2/pix/payments/dict");
@@ -137,7 +166,7 @@ trait VolutiTrait
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('authorization: Bearer '. $token,'Content-Type: application/json','x-idempotency-key:'. $withdrawalId));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('authorization: Bearer ' . $token, 'Content-Type: application/json', 'x-idempotency-key:' .     $withsrawalId));
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         $response = curl_exec($ch);
         curl_close($ch);
@@ -148,12 +177,22 @@ trait VolutiTrait
 
         // Decodifica o corpo da resposta JSON
 
+
         // { ["endToEndId"]=> string(32) "E30385259202410261537191618a0373" ["eventDate"]=> string(29) "2024-10-26T15:37:19.161+00:00" ["status"]=> string(7) "PENDING" ["id"]=> int(72287107) ["payment"]=> array(2) { ["currency"]=> string(3) "BRL" ["amount"]=> int(1) } ["type"]=> string(6) "QUEUED" }
         $responseData = json_decode($body, true);
-       
-        return $responseData;
-
+        if ($responseData["status"] !== "REJECTED" &&   $responseData["status"] !== "PENDING") {
+            PixOut::where("id", $withsrawalId)->update(['endToEndId' => $responseData['endToEndId'], 'status' => 1]);
+            return $responseData;
+        } else {
+            PixOut::where("id", $withsrawalId)->update(['endToEndId' => $responseData['endToEndId']]);
+          
+            return $responseData;
+        }
     }
 
-    public function pixWebhook() {}
+    public function pixWebhook()
+    {
+
+        // pegar o user e incrementar  o balance se fro confirmando um pagamento daquele user
+    }
 }

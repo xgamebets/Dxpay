@@ -4,7 +4,7 @@
             {{ $this->form }}
             <br>
             <x-filament::button type="submit">
-                Atualizar dados
+                Gerar cobrança
             </x-filament::button>
         </form>
     @endif

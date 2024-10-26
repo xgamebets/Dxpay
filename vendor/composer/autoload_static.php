@@ -744,6 +744,7 @@ class ComposerStaticInit7e8c3c14ff33b199b4a0838993eb8423
         'App\\Http\\Controllers\\PixController' => __DIR__ . '/../..' . '/app/Http/Controllers/PixController.php',
         'App\\Models\\Gereciamento' => __DIR__ . '/../..' . '/app/Models/Gereciamento.php',
         'App\\Models\\PixInModel' => __DIR__ . '/../..' . '/app/Models/PixInModel.php',
+        'App\\Models\\PixOut' => __DIR__ . '/../..' . '/app/Models/PixOut.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\Filament\\AdminPanelProvider' => __DIR__ . '/../..' . '/app/Providers/Filament/AdminPanelProvider.php',
