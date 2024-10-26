@@ -39,6 +39,8 @@ class PixoutPage extends Page implements HasForms
 
     public ?string $amount;
     public ?array $data = [];
+
+    public ?bool $disabled = false;
     // public ?GamesKey $setting;
 
     /**
@@ -75,9 +77,15 @@ class PixoutPage extends Page implements HasForms
      */
     public function submit(): void
     {
+        $this->disabled = true;
         $amount = $this->data['amount'];
         $pixKey = $this->data['pix_key'];
         $response = self::cashout($amount,$pixKey);
+        
+        if(isset($response['detail'])){
+            Notification::make()->title("Erro")->body($response['detail'])->send();
+            return;
+        }
         
         Notification::make()->title('Status atual:'. $response['status'])->body('Saque realizado com sucesso!')->send();
     }

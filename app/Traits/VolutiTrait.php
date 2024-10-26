@@ -180,7 +180,10 @@ trait VolutiTrait
 
         // { ["endToEndId"]=> string(32) "E30385259202410261537191618a0373" ["eventDate"]=> string(29) "2024-10-26T15:37:19.161+00:00" ["status"]=> string(7) "PENDING" ["id"]=> int(72287107) ["payment"]=> array(2) { ["currency"]=> string(3) "BRL" ["amount"]=> int(1) } ["type"]=> string(6) "QUEUED" }
         $responseData = json_decode($body, true);
-        if ($responseData["status"] !== "REJECTED" &&   $responseData["status"] !== "PENDING") {
+        if(isset($responseData['detail'])){
+            return $responseData;
+        }
+        if ($responseData["status"] !== "REJECTED") {
             PixOut::where("id", $withsrawalId)->update(['endToEndId' => $responseData['endToEndId'], 'status' => 1]);
             return $responseData;
         } else {

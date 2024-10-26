@@ -3,7 +3,7 @@
         <form wire:submit.prevent="submit">
             {{ $this->form }}
             <br>
-            <x-filament::button type="submit">
+            <x-filament::button wire:disabled='disabled' type="submit">
                Pagar
             </x-filament::button>
         </form>

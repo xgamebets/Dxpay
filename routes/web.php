@@ -7,7 +7,7 @@ Route::get('/', function () {
     return redirect('/home');
 });
 
-Route::post('/webhook/pix');
+Route::post('/webhook/pix',[PixController::class,'webhook']);
 // api pix  routes
 
 Route::post('/requestQrCode',[PixController::class,'gererateQrCode'])->name('pixgenerate');
