@@ -41,7 +41,7 @@ class VerifyCsrfToken
      */
     protected $except = [
         '/requestQrCode',
-        '/webhook'
+        '/webhook/pix'
     ];
 
     /**
