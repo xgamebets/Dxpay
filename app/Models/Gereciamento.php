@@ -10,9 +10,11 @@ class Gereciamento extends Model
 {
     use HasFactory;
 
-    protected $table = 'users';
+    protected $table = 'ip';
     protected $fillable = [
+        'status',
         'ip',
+        'user_id'
     ];
 
 }

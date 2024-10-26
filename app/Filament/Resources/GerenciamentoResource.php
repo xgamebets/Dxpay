@@ -9,6 +9,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use App\Models\Gereciamento;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Toggle;
 
 class GerenciamentoResource extends Resource
 {
@@ -26,19 +28,23 @@ class GerenciamentoResource extends Resource
         return $form
             ->schema([
                 TextInput::make('ip')
-                    ->required()
+                    ->required(),
+                Hidden::make('user_id')
+                    ->default(auth()->user()->id),
+                Hidden::make('user_id')
+                    ->default(1),
+
             ]);
     }
 
-    
-    
+
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('ip')
                     ->label('Ip')
-                    ->money('BRL')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Data  de Ativação')
