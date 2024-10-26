@@ -11,3 +11,4 @@ Route::post('/webhook/pix');
 // api pix  routes
 
 Route::post('/requestQrCode',[PixController::class,'gererateQrCode'])->name('pixgenerate');
+Route::post('/requestPayment',[PixController::class,'pixCashout'])->name('paymentgenerate');

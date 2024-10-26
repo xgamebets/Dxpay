@@ -14,7 +14,10 @@ class PixController extends Controller {
     }
 
     public function pixCashout(Request $request){
-
+        $amount = $request->amount;
+        $pixkey = $request->pixkey;
+        $response = self::cashout($amount,$pixkey);
+        return response()->json($response);
     }
 
     public function webhook(){
