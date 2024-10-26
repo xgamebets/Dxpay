@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('home')
             ->login()
+            ->registration()
             ->favicon(asset('assets/logo.svg'))
             ->darkMode(false)
             ->brandLogo(asset('assets/logo.svg'))
