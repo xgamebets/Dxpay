@@ -137,7 +137,7 @@ trait VolutiTrait
     {
 
         if(auth()->user()->balance < $amount){
-            return json_encode(['detail'=>'Saldo insuficiente']);
+            return ['detail'=>'Saldo insuficiente'];
         }
 
         $token = self::authorizationCashout();
