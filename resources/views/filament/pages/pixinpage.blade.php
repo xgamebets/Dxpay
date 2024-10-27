@@ -17,21 +17,19 @@
                 class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
                 Copiar QR Code
             </x-filament::button>
+            <input id="copiaEcola" type="hidden" value="{{$copiaEcola}}">
         </div>
     @endif
 
 </x-filament-panels::page>
 
-@if ($copiaEcola)
-    <script>
-        function copyQrCode() {
-            navigator.clipboard.writeText({
-                $copiaEcola
-            }).then(() => {
-                console.log($copiaEcola);
-            }).catch(err => {
-                console.error('Erro ao copiar QR Code: ', err);
-            });
-        }
-    </script>
-@endif
+<script>
+    function copyQrCode() {
+        const qrCodeImage = document.getElementById('copiaEcola').value;
+        navigator.clipboard.writeText(qrCodeImage).then(() => {
+     
+        }).catch(err => {
+            console.error('Erro ao copiar QR Code: ', err);
+        });
+    }
+</script>
