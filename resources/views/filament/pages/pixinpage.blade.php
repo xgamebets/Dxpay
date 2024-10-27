@@ -22,12 +22,16 @@
 
 </x-filament-panels::page>
 
-<script>
-    function copyQrCode() {
-        navigator.clipboard.writeText({{$copiaEcola}}).then(() => {
-            console.log($copiaEcola);
-        }).catch(err => {
-            console.error('Erro ao copiar QR Code: ', err);
-        });
-    }
-</script>
+@if ($copiaEcola)
+    <script>
+        function copyQrCode() {
+            navigator.clipboard.writeText({
+                $copiaEcola
+            }).then(() => {
+                console.log($copiaEcola);
+            }).catch(err => {
+                console.error('Erro ao copiar QR Code: ', err);
+            });
+        }
+    </script>
+@endif
