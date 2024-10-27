@@ -24,8 +24,7 @@
 
 <script>
     function copyQrCode() {
-        const qrCodeImage = document.getElementById('qrCodeImage').src;
-        navigator.clipboard.writeText(qrCodeImage).then(() => {
+        navigator.clipboard.writeText({{$qrCode}}).then(() => {
      
         }).catch(err => {
             console.error('Erro ao copiar QR Code: ', err);
