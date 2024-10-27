@@ -74,7 +74,7 @@ class PixController extends Controller
         if ($data['type'] === 'RECEIVE') {
             $transaction = PixInModel::where('txtId', $data['data']['txId'])->first();
             if ($transaction->status === 0) {
-                $amount = $transaction->amount; // subtrair a taxa
+                $amount = $transaction->amount - ($transaction->amount * 0.025); // subtrair a taxa
                 User::where('id', $transaction->user_id)->increment('balance', $amount);
                 PixInModel::where('txtId', $data['data']['txId'])->update(['status' => 1]);
                 return response()->json(['success'=>'confirmado']);

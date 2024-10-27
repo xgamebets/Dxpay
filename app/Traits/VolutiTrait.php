@@ -200,9 +200,4 @@ trait VolutiTrait
         }
     }
 
-    public function pixWebhook()
-    {
-
-        // pegar o user e incrementar  o balance se fro confirmando um pagamento daquele user
-    }
 }
