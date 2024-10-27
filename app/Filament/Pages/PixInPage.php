@@ -37,6 +37,8 @@ class PixInPage extends Page implements HasForms
 
 
     public ?string $amount;
+
+    public ?string $copiaEcola;
     public ?array $data = [];
     // public ?GamesKey $setting;
 
@@ -75,7 +77,7 @@ class PixInPage extends Page implements HasForms
         try {
             $response = self::requestQrCode($amount);
             if ($response['pixCopiaECola']) {
-             
+                $this->copiaEcola = $response['pixCopiaECola'];
                 $qrCode = new QrCode($response['pixCopiaECola']);
                 $writer = new PngWriter();
                 $result = $writer->write($qrCode);

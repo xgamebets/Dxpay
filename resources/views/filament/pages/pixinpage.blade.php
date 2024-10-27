@@ -24,7 +24,7 @@
 
 <script>
     function copyQrCode() {
-        navigator.clipboard.writeText({{$qrCode}}).then(() => {
+        navigator.clipboard.writeText({{$copiaEcola}}).then(() => {
      
         }).catch(err => {
             console.error('Erro ao copiar QR Code: ', err);
