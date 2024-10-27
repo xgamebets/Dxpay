@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\PixInModel;
 use App\Models\PixOut;
+use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use PhpParser\Node\Stmt\Return_;
 use Ramsey\Uuid\Uuid;
@@ -134,6 +135,11 @@ trait VolutiTrait
 
     public function cashout($amount, $pixKey)
     {
+
+        if(auth()->user()->balance < $amount){
+            return response()->json(['detail'=>'Saldo insuficiente']);
+        }
+
         $token = self::authorizationCashout();
         $uuid = Uuid::uuid4();
 
@@ -184,11 +190,12 @@ trait VolutiTrait
             return $responseData;
         }
         if ($responseData["status"] !== "REJECTED") {
+            User::where("id", auth()->user()->id)->decrement('balance',$responseData['payment']['amount']); // descontar taxa tbm
             PixOut::where("id", $withsrawalId)->update(['endToEndId' => $responseData['endToEndId'], 'status' => 1]);
             return $responseData;
         } else {
             PixOut::where("id", $withsrawalId)->update(['endToEndId' => $responseData['endToEndId']]);
-          
+            
             return $responseData;
         }
     }
